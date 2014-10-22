@@ -90,11 +90,7 @@ function belongsTo(type, options) {
   @namespace DS
 */
 Model.reopen({
-  notifyBelongsToAdded: function(key, relationship) {
-    this.notifyPropertyChange(key);
-  },
-
-  notifyBelongsToRemoved: function(key) {
+  notifyBelongsToChanged: function(key) {
     this.notifyPropertyChange(key);
   }
 });
