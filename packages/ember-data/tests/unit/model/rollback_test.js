@@ -89,10 +89,13 @@ test("a deleted record can be rollbacked if it fails to save, record arrays are 
   person.save().then(null, async(function() {
     equal(person.get('isError'), true);
     equal(person.get('isDeleted'), true);
-    person.rollback();
-    equal(person.get('isDeleted'), false);
-    equal(person.get('isError'), false);
-  })).then(async(function() {
+
+    Ember.run(function() {
+      person.rollback();
+      equal(person.get('isDeleted'), false);
+      equal(person.get('isError'), false);
+    });
+
     equal(people.get('length'), 1, "the underlying record array is updated accordingly in an asynchronous way");
   }));
 });

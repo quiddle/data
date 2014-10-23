@@ -78,7 +78,23 @@ export default Ember.Object.extend({
     record._recordArrays = null;
   },
 
+
+  //Don't need to update non filtered arrays on simple changes
   _recordWasChanged: function (record) {
+    var type = record.constructor;
+    var recordArrays = this.filteredRecordArrays.get(type);
+    var filter;
+
+    forEach(recordArrays, function(array) {
+      filter = get(array, 'filterFunction');
+      if (filter) {
+        this.updateRecordArray(array, filter, type, record);
+      }
+    }, this);
+  },
+
+  //Need to update live arrays on loading
+  recordWasLoaded: function(record) {
     var type = record.constructor;
     var recordArrays = this.filteredRecordArrays.get(type);
     var filter;
@@ -87,20 +103,7 @@ export default Ember.Object.extend({
       filter = get(array, 'filterFunction');
       this.updateRecordArray(array, filter, type, record);
     }, this);
-
-    // loop through all manyArrays containing an unloaded copy of this
-    // clientId and notify them that the record was loaded.
-    var manyArrays = record._loadingRecordArrays;
-
-    if (manyArrays) {
-      for (var i=0, l=manyArrays.length; i<l; i++) {
-        manyArrays[i].loadedRecord();
-      }
-
-      record._loadingRecordArrays = [];
-    }
   },
-
   /**
     Update an individual filter.
 
