@@ -25,13 +25,12 @@ ManyRelationship.prototype.serverAddRecord = function(record, idx) {
   if (this.serverMembers.has(record)) {
     return;
   }
-  this._super$serverAddRecord(record, idx);
   if (idx !== undefined) {
     this.serverState.insertAt(idx, record);
   } else {
     this.serverState.push(record);
   }
-  this.syncServer();
+  this._super$serverAddRecord(record, idx);
 };
 
 ManyRelationship.prototype._super$addRecord = Relationship.prototype.addRecord;
@@ -48,13 +47,12 @@ ManyRelationship.prototype.serverRemoveRecordFromOwn = function(record, idx) {
   if (!this.serverMembers.has(record)) {
     return;
   }
-  this._super$serverRemoveRecordFromOwn(record, idx);
   if (idx !== undefined) {
     this.serverState.removeAt(idx);
   } else {
     this.serverState.removeObject(record);
   }
-  this.syncServer();
+  this._super$serverRemoveRecordFromOwn(record, idx);
 };
 
 ManyRelationship.prototype._super$syncServer = Relationship.prototype.syncServer;

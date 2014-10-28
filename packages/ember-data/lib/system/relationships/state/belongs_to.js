@@ -44,7 +44,6 @@ BelongsToRelationship.prototype.serverAddRecord = function(newRecord) {
 
   this.serverState = newRecord;
   this._super$serverAddRecord(newRecord);
-  this.syncServer();
 };
 
 BelongsToRelationship.prototype._super$syncServer = Relationship.prototype.syncServer;
@@ -86,9 +85,8 @@ BelongsToRelationship.prototype.removeRecordFromOwn = function(record) {
 BelongsToRelationship.prototype._super$serverRemoveRecordFromOwn = Relationship.prototype.serverRemoveRecordFromOwn;
 BelongsToRelationship.prototype.serverRemoveRecordFromOwn = function(record) {
   if (!this.serverMembers.has(record)){ return;}
-  this._super$serverRemoveRecordFromOwn(record);
   this.serverState = null;
-  this.syncServer();
+  this._super$serverRemoveRecordFromOwn(record);
 };
 
 BelongsToRelationship.prototype.findRecord = function() {
