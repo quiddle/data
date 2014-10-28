@@ -74,7 +74,10 @@ test("Fetching a belongsTo that is set to a different record, sets the old relat
 
   stanleysFriend.get('bestFriend').then(async(function(fetchedUser) {
     equal(fetchedUser, stanley, 'User relationship was initally setup correctly');
-    var stanleysNewFriend = store.push('user', {id:3, name: "Stanley's New friend", bestFriend: 1});
+    var stanleysNewFriend;
+    Ember.run(function() {
+      stanleysNewFriend = store.push('user', {id:3, name: "Stanley's New friend", bestFriend: 1});
+    });
 
     stanley.get('bestFriend').then(async(function(fetchedNewFriend){
       equal(fetchedNewFriend, stanleysNewFriend, 'User relationship was updated correctly');

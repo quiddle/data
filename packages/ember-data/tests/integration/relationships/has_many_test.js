@@ -405,11 +405,13 @@ test("An updated `links` value should invalidate a relationship cache", function
     equal(comments.get('length'), 2, "comments have 2 length");
     equal(comments.objectAt(0).get('body'), 'First', "comment 1 successfully loaded");
     env.store.push('post', {id:1, links: { comments: '/second' }});
-    post.get('comments').then(async(function(newComments) {
+    stop();
+    post.get('comments').then(function(newComments) {
+      start();
       equal(comments, newComments, "hasMany array was kept the same");
       equal(newComments.get('length'), 3, "comments updated successfully");
       equal(newComments.objectAt(0).get('body'), 'Third', "third comment loaded successfully");
-    }));
+    });
   }));
 });
 
@@ -711,7 +713,9 @@ test("When an unloaded record is added to the hasMany, it gets fetched once the 
   post.get('comments').then(async(function(fetchedComments) {
     equal(fetchedComments.get('length'), 2, 'comments fetched successfully');
     equal(fetchedComments.objectAt(0).get('body'), 'first', 'first comment loaded successfully');
-    env.store.push('post', { id: 1, comments: [1, 2, 3] });
+    Ember.run(function() {
+      env.store.push('post', { id: 1, comments: [1, 2, 3] });
+    });
     post.get('comments').then(async(function(newlyFetchedComments) {
       equal(newlyFetchedComments.get('length'), 3, 'all three comments fetched successfully');
       equal(newlyFetchedComments.objectAt(2).get('body'), 'third', 'third comment loaded successfully');

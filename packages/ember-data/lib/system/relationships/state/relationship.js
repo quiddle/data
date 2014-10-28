@@ -79,7 +79,7 @@ Relationship.prototype = {
         record._implicitRelationships[this.inverseKeyForImplicit].serverAddRecord(this.record);
       }
     }
-    this.syncServer();
+    this.syncServerLater();
   },
 
   serverRemoveRecords: function(records, idx) {
@@ -103,7 +103,7 @@ Relationship.prototype = {
         }
       }
     }
-    this.syncServer();
+    this.syncServerLater();
   },
 
   addRecord: function(record, idx) {
@@ -165,16 +165,25 @@ Relationship.prototype = {
 
   serverRemoveRecordFromOwn: function(record) {
     this.serverMembers.delete(record);
-    this.syncServer();
+    this.syncServerLater();
   },
 
   syncServer: function() {
+    this.willSync = false;
     //TODO(Igor) make this less abysmally slow
     var current = this.serverMembers.toArray();
     this.members = new OrderedSet();
     for(var i =0; i<current.length; i++) {
       this.members.add(current[i]);
     }
+  },
+
+  syncServerLater: function() {
+    if (this.willSync) {
+      return;
+    }
+    //TODO(Igor) Should this go to afterRender??
+    Ember.run.schedule('actions', this, this.syncServer);
   },
 
   updateLink: function(link) {
