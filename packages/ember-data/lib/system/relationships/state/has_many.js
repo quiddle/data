@@ -150,6 +150,7 @@ ManyRelationship.prototype.notifyHasManyChanged = function() {
 };
 
 ManyRelationship.prototype.getRecords = function() {
+  //TODO(Igor) sync server here, once our syncing is not stupid
   if (this.isAsync) {
     var self = this;
     var promise;

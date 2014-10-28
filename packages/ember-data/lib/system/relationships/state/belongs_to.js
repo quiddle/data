@@ -108,6 +108,7 @@ BelongsToRelationship.prototype.fetchLink = function() {
 };
 
 BelongsToRelationship.prototype.getRecord = function() {
+  //TODO(Igor) syncServer here once our syncing is not stupid
   if (this.isAsync) {
     var promise;
     if (this.link){
