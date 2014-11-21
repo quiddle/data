@@ -6,7 +6,7 @@ import  ManyArray from "ember-data/system/record_arrays/many_array";
 var ManyRelationship = function(store, record, inverseKey, relationshipMeta) {
   this._super$constructor(store, record, inverseKey, relationshipMeta);
   this.belongsToType = relationshipMeta.type;
-  this.serverState = Ember.A();
+  this.serverState = [];
   this.manyArray = ManyArray.create({ serverState:this.serverState, store:this.store, relationship:this, type:this.belongsToType, record:record});
   this.isPolymorphic = relationshipMeta.options.polymorphic;
   this.manyArray.isPolymorphic = this.isPolymorphic;
@@ -26,7 +26,7 @@ ManyRelationship.prototype.serverAddRecord = function(record, idx) {
     return;
   }
   if (idx !== undefined) {
-    this.serverState.insertAt(idx, record);
+    this.serverState.splice(idx, 0, record);
   } else {
     this.serverState.push(record);
   }
@@ -44,13 +44,15 @@ ManyRelationship.prototype.addRecord = function(record, idx) {
 
 ManyRelationship.prototype._super$serverRemoveRecordFromOwn = Relationship.prototype.serverRemoveRecordFromOwn;
 ManyRelationship.prototype.serverRemoveRecordFromOwn = function(record, idx) {
+  var i = idx;
   if (!this.serverMembers.has(record)) {
     return;
   }
-  if (idx !== undefined) {
-    this.serverState.removeAt(idx);
-  } else {
-    this.serverState.removeObject(record);
+  if (i === undefined) {
+    i = this.serverState.indexOf(record);
+  }
+  if (i > -1) {
+    this.serverState.splice(i, 1);
   }
   this._super$serverRemoveRecordFromOwn(record, idx);
 };

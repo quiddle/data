@@ -1399,7 +1399,10 @@ Store = Ember.Object.extend({
       payload = inputPayload;
       serializer = this.serializerFor(type);
     }
-    serializer.pushPayload(this, payload);
+    var store = this;
+    _adapterRun(this, function() {
+      serializer.pushPayload(store, payload);
+    });
   },
 
   /**

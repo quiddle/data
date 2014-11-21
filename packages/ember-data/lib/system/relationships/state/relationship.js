@@ -150,7 +150,7 @@ Relationship.prototype = {
   },
 
   removeRecordFromOwn: function(record) {
-    this.members.delete(record);
+    this.members.remove(record);
     this.notifyRecordRelationshipRemoved(record);
     this.record.updateRecordArrays();
   },
@@ -164,25 +164,21 @@ Relationship.prototype = {
   },
 
   serverRemoveRecordFromOwn: function(record) {
-    this.serverMembers.delete(record);
+    this.serverMembers.remove(record);
     this.syncServerLater();
   },
 
   syncServer: function() {
     this.willSync = false;
     //TODO(Igor) make this less abysmally slow
-    var current = this.serverMembers.toArray();
-    this.members = new OrderedSet();
-    for(var i =0; i<current.length; i++) {
-      this.members.add(current[i]);
-    }
+    this.members = this.serverMembers.copy();
   },
 
   syncServerLater: function() {
     if (this.willSync) {
       return;
     }
-    //TODO(Igor) Should this go to afterRender??
+    this.willSync = true;
     Ember.run.schedule('actions', this, this.syncServer);
   },
 
