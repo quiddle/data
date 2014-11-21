@@ -416,9 +416,7 @@ test("create - response can contain relationships the client doesn't yet know ab
 
     var postRecords = store.typeMapFor(Post).records;
     for(var i = 0; i < postRecords.length; i++) {
-      var post = postRecords[i];
-      var string = post.toString();
-      equal(string, '<Post:' + Ember.guidFor(post) + ':1>', "post.toString() should have the correct id");
+      equal(post, postRecords[i], "The object in the identity map is the same");
     }
   }));
 });
